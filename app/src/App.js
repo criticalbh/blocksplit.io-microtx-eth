@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {BrowserRouter as Router, Link, Route} from "react-router-dom";
 import "./App.css";
+import Home from "./Home";
 import Menu from "./Menu";
 import Restaurant from "./Restaurant";
 
@@ -17,6 +18,9 @@ class App extends Component {
               <div className="container-fluid">
                 <ul className="nav navbar-nav">
                   <li>
+                    <Link to="/">Home</Link>
+                  </li>
+                  <li>
                     <Link to="/restaurant">Restaurant</Link>
                   </li>
                   <li>
@@ -25,8 +29,9 @@ class App extends Component {
                 </ul>
               </div>
             </nav>
-            <Route path="/restaurant" component={Restaurant}/>
-            <Route path="/menu" component={Menu}/>
+            <Route exact path="/restaurant" component={Restaurant}/>
+            <Route exact path="/menu" component={Menu}/>
+            <Route exact path="/" component={Home}/>
           </div>
         </Router>
       </div>
