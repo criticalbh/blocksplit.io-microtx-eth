@@ -13,14 +13,18 @@ class App extends Component {
         </header>
         <Router>
           <div>
-            <ul>
-              <li>
-                <Link to="/restaurant">Restaurant</Link>
-              </li>
-              <li>
-                <Link to="/menu">Menu</Link>
-              </li>
-            </ul>
+            <nav className="navbar navbar-default">
+              <div className="container-fluid">
+                <ul className="nav navbar-nav">
+                  <li>
+                    <Link to="/restaurant">Restaurant</Link>
+                  </li>
+                  <li>
+                    <Link to="/menu">Menu</Link>
+                  </li>
+                </ul>
+              </div>
+            </nav>
             <Route path="/restaurant" component={Restaurant}/>
             <Route path="/menu" component={Menu}/>
           </div>
