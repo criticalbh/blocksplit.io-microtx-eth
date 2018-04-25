@@ -1,6 +1,7 @@
 import * as sigUtil from "eth-sig-util";
 import React, {Component} from "react";
 import * as Web3 from "web3";
+import * as Account from "eth-lib/lib/account";
 
 class Menu extends Component {
   constructor() {
@@ -18,7 +19,7 @@ class Menu extends Component {
   }
 
   sendMessage(val) {
-    this.socket.emit("buyitem", {my: "data"});
+    this.socket.emit("buyitem", {coke: val});
     this.signMessage(val);
   }
 
@@ -45,11 +46,17 @@ class Menu extends Component {
         return console.error(result.error.message);
       }
 
-      console.log(result);
+
+      let signature = result.result;
+      const vrs = Account.decodeSignature(signature);
+      console.log('signature', signature);
+      console.log(vrs);
+      const hash = sigUtil.typedSignatureHash(msgParams);
+      console.log('hash', hash);
 
       const recovered = sigUtil.recoverTypedSignature({
         data: msgParams,
-        sig: result.result,
+        sig: signature,
       }).toLowerCase();
 
       if (recovered === myAddress.toLowerCase()) {
@@ -78,8 +85,8 @@ class Menu extends Component {
                   </a>
                 </div>
                 <div className="media-body">
-                  <h4 className="media-heading">Coca cola - 1 ETH</h4>
-                  <button onClick={() => this.sendMessage(1)} className="btn btn-default">Buy</button>
+                  <h4 className="media-heading">Coca cola - 0.01 ETH</h4>
+                  <button onClick={() => this.sendMessage(0.01)} className="btn btn-default">Buy</button>
                 </div>
               </li>
               <li className="media">
@@ -91,8 +98,8 @@ class Menu extends Component {
                   </a>
                 </div>
                 <div className="media-body">
-                  <h4 className="media-heading">Coca cola - 2 ETH</h4>
-                  <button onClick={() => this.sendMessage(2)} className="btn btn-default">Buy</button>
+                  <h4 className="media-heading">Coca cola - 0.02 ETH</h4>
+                  <button onClick={() => this.sendMessage(0.02)} className="btn btn-default">Buy</button>
                 </div>
               </li>
               <li className="media">
@@ -105,7 +112,7 @@ class Menu extends Component {
                 </div>
                 <div className="media-body">
                   <h4 className="media-heading">Coca cola - 3 ETH</h4>
-                  <button onClick={() => this.sendMessage(3)} className="btn btn-default">Buy</button>
+                  <button onClick={() => this.sendMessage(0.03)} className="btn btn-default">Buy</button>
                 </div>
               </li>
             </ul>
