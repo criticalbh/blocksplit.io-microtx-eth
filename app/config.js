@@ -1,0 +1,36 @@
+export const config = {
+  contractAddress: "0xfd573b395c1e6a6e89df3207a20098a592feb6e1",
+  contractAbi: [{
+    "constant": true,
+    "inputs": [],
+    "name": "startDate",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+  }, {
+    "constant": true,
+    "inputs": [],
+    "name": "customer",
+    "outputs": [{"name": "", "type": "address"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+  }, {
+    "constant": true,
+    "inputs": [],
+    "name": "restaurantOwner",
+    "outputs": [{"name": "", "type": "address"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function",
+  }, {
+    "constant": false,
+    "inputs": [{"name": "to", "type": "address"}],
+    "name": "Deposit",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function",
+  }],
+};
