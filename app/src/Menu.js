@@ -47,12 +47,16 @@ class Menu extends Component {
       }).then(response => {
         if (response !== restaurantAddress) {
           console.log("Restaurant is cheating");
+          throw Error();
         }
       });
+
+      this.signMessage(data.data[0].value);
 
     });
 
     this.sendMessage = this.sendMessage.bind(this);
+    this.withdraw = this.withdraw.bind(this);
   }
 
   sendMessage(val) {
@@ -83,25 +87,18 @@ class Menu extends Component {
         return console.error(result.error.message);
       }
 
-
       let signature = result.result;
-      const vrs = Account.decodeSignature(signature);
-      console.log("signature", signature);
-      console.log(vrs);
-      const hash = sigUtil.typedSignatureHash(msgParams);
-      console.log("hash", hash);
 
-      const recovered = sigUtil.recoverTypedSignature({
+      this.lastSig = {
         data: msgParams,
         sig: signature,
-      }).toLowerCase();
-
-      if (recovered === myAddress.toLowerCase()) {
-        alert("Recovered signer: " + myAddress);
-      } else {
-        alert("Failed to verify signer, got: " + result);
-      }
+      };
+      console.log(this.lastSig);
     });
+  }
+
+  withdraw() {
+    console.log(this.lastSig);
   }
 
   render() {
@@ -110,6 +107,7 @@ class Menu extends Component {
         <h1>
           Menu
         </h1>
+        <button onClick={() => {this.withdraw()}}>Withdraw rest of ETH</button>
         <div className="row">
           <div className="col-md-4 col-md-offset-4">
             <ul className="media-list">
