@@ -44,7 +44,12 @@ class Menu extends Component {
 
       //last blockchain check if sig is correct
       const vrs = Account.decodeSignature(data.signature);
-      this.contract.methods.checkSignature(data.data[0].value, vrs[0], vrs[1], vrs[2]).call({
+      let value = data.data[0].value;
+
+      console.log(value);
+      console.log(value, vrs[0], vrs[1], vrs[2]);
+
+      this.contract.methods.checkSignature(value, vrs[0], vrs[1], vrs[2]).call({
         from: this.web3.eth.defaultAccount,
       }).then(response => {
         if (response !== restaurantAddress) {
@@ -52,9 +57,7 @@ class Menu extends Component {
           throw Error();
         }
       });
-
-      this.signMessage(data.data[0].value);
-
+      this.signMessage(value);
     });
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -62,8 +65,8 @@ class Menu extends Component {
   }
 
   sendMessage(val) {
-    this.socket.emit("buyitem", {item: val.toString()});
-    // this.signMessage(val);
+    const value = this.web3.utils.toWei(val.toString());
+    this.socket.emit("buyitem", {item: value});
   }
 
   signMessage(amount) {
@@ -71,9 +74,9 @@ class Menu extends Component {
 
     const msgParams = [
       {
-        type: "string",      // Any valid solidity type
+        type: "uint256",      // Any valid solidity type
         name: "NewBalance",     // Any string label you want
-        value: amount.toString()  // The value to sign
+        value: amount  // The value to sign
       },
     ];
 
@@ -105,12 +108,18 @@ class Menu extends Component {
     const vrs = Account.decodeSignature(sig);
     const hash = sigUtil.typedSignatureHash(data);
 
-    console.log(hash, vrs[0], vrs[1], vrs[2], data[0].value.toString());
-    this.contract.methods.Withdraw(hash, vrs[0], vrs[1], vrs[2], parseFloat(data[0].value)).send({
+    let value = data[0].value;
+    console.log(hash, vrs[0], vrs[1], vrs[2], value);
+
+    this.contract.methods.WithdrawCustomer(hash, vrs[0], vrs[1], vrs[2], value).send({
       from: this.web3.eth.defaultAccount,
     }).then(response => {
       console.log(response);
+      setTimeout(() => {
+        this.socket.emit("withdraw", {data: "empty"});
+      }, 10000);
     });
+
   }
 
   render() {
@@ -119,7 +128,10 @@ class Menu extends Component {
         <h1>
           Menu
         </h1>
-        <button onClick={() => {this.withdraw()}}>Withdraw rest of ETH</button>
+        <button onClick={() => {
+          this.withdraw();
+        }}>Withdraw rest of ETH
+        </button>
         <div className="row">
           <div className="col-md-4 col-md-offset-4">
             <ul className="media-list">

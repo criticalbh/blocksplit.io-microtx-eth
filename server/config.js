@@ -1,4 +1,4 @@
-export const config = {
+const config = {
   contractAddress: "0x9c977da01a1b11985950ef63f3ca242093ac1e38",
   contractAbi: [{
     "constant": false,
@@ -109,4 +109,7 @@ export const config = {
     "type": "event",
   }],
 
+
 };
+
+module.exports = config;
