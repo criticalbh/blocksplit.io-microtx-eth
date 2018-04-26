@@ -16,43 +16,53 @@ contract Restaurant {
 		startDate = now;
 	}
 
-	function Withdraw(bytes32 hash, uint8 v, bytes32 r, bytes32 s, string value) public returns(address) {
-        emit Poruka("asdasdasd");
+	function test(string value) returns(uint){
+	    uint val = stringToUint(value);
+	    return val;
+	}
+
+	function WithdrawCustomer(bytes32 hash, uint8 v, bytes32 r, bytes32 s, uint256 value) public returns(address) {
 		address signer;
-		emit Hey(signer);
 		bytes32 proof;
-
-
 		signer = checkSignature(value, v, r, s);
 
-		emit Hey(signer);
-
-		// signature is invalid, throw
-		if (signer != customer && signer != restaurantOwner) throw;
+		if (signer != customer) throw;
 
 		proof = doHash(value);
 
-		// signature is valid but doesn't match the data provided
+		if (proof != hash) revert();
+
+		signatures[proof] = signer;
+	}
+
+	function WithdrawRestaurant(bytes32 hash, uint8 v, bytes32 r, bytes32 s, uint256 value) public returns(address) {
+		address signer;
+		bytes32 proof;
+		signer = checkSignature(value, v, r, s);
+
+		if (signer != restaurantOwner) throw;
+
+		proof = doHash(value);
+
 		if (proof != hash) revert();
 
 		if (signatures[proof] == 0)
-			signatures[proof] = signer;
-		else if (signatures[proof] != signer){
-			// channel completed, both signatures provided
-			if (!restaurantOwner.send(stringToUint(value))) revert();
+			throw;
+
+		if (signatures[proof] != customer){
+			if (!restaurantOwner.send(value)) revert();
 			selfdestruct(customer);
 		}
-
 	}
 
-	function doHash(string message) pure returns (bytes32) {
+	function doHash(uint256 message) pure returns (bytes32) {
 	  return keccak256(
-        keccak256('string NewBalance'),
+        keccak256('uint256 NewBalance'),
 	    keccak256(message)
         );
 	}
 
-	function checkSignature(string message, uint8 v, bytes32 r, bytes32 s) public pure returns (address) {
+	function checkSignature(uint256 message, uint8 v, bytes32 r, bytes32 s) public pure returns (address) {
         var hash = doHash(message);
         return ecrecover(hash, v, r, s);
 	}
