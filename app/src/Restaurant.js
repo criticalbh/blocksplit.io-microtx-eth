@@ -14,8 +14,6 @@ class Restaurant extends Component {
 
 
     this.contract = new this.web3.eth.Contract(config.contractAbi, config.contractAddress);
-    console.log("", this.contract);
-
   }
 
   render() {
@@ -28,7 +26,7 @@ class Restaurant extends Component {
           <div className="form-group">
             <label htmlFor="deposit">Deposit amount</label>
             <input onChange={this.updateInputValue.bind(this)} type="number" className="form-control" id="deposit"
-                   placeholder="Ether"/>
+                   placeholder="Ether"/>s
           </div>
           <button onClick={() => {
             this.doDeposit();

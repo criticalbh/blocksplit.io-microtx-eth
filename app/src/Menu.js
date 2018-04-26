@@ -1,26 +1,63 @@
+import * as Account from "eth-lib/lib/account";
 import * as sigUtil from "eth-sig-util";
 import React, {Component} from "react";
 import * as Web3 from "web3";
-import * as Account from "eth-lib/lib/account";
+import {config} from "./config";
+
+const restaurantAddress = "0x3C829B580210C44ce3816635160693CaFA62D31e";
 
 class Menu extends Component {
   constructor() {
     super();
     this.web3 = new Web3(web3.currentProvider);// eslint-disable-line no-undef
+
     this.web3.eth.getCoinbase().then(res => {
       this.web3.eth.defaultAccount = res;
     });
 
+    this.contract = new this.web3.eth.Contract(config.contractAbi, config.contractAddress);
+
     this.socket = io("http://localhost:8080"); // eslint-disable-line no-undef
-    this.socket.on("helloworld", function (data) {
-      console.log(data);
+
+    this.socket.on("buyitemSuccess", (data) => {
+
+      // get address from restaurant signature
+      const recovered = sigUtil.recoverTypedSignature({
+        data: data.data,
+        sig: data.signature,
+      }).toLowerCase();
+
+      if (recovered.toLowerCase() !== restaurantAddress.toLowerCase()) {
+        console.log("It is not signed by restaurant!");
+        throw Error();
+      }
+
+      // hash the same data
+      const hash = sigUtil.typedSignatureHash(data.data);
+
+      if (hash.toLowerCase() !== data.hash.toLowerCase()) {
+        console.log("Correct data is not signed!");
+        throw Error();
+      }
+
+      //last blockchain check if sig is correct
+      const vrs = Account.decodeSignature(data.signature);
+      this.contract.methods.checkSignature(data.data[0].value, vrs[0], vrs[1], vrs[2]).call({
+        from: this.web3.eth.defaultAccount,
+      }).then(response => {
+        if (response !== restaurantAddress) {
+          console.log("Restaurant is cheating");
+        }
+      });
+
     });
+
     this.sendMessage = this.sendMessage.bind(this);
   }
 
   sendMessage(val) {
-    this.socket.emit("buyitem", {coke: val});
-    this.signMessage(val);
+    this.socket.emit("buyitem", {item: val});
+    // this.signMessage(val);
   }
 
   signMessage(amount) {
@@ -49,10 +86,10 @@ class Menu extends Component {
 
       let signature = result.result;
       const vrs = Account.decodeSignature(signature);
-      console.log('signature', signature);
+      console.log("signature", signature);
       console.log(vrs);
       const hash = sigUtil.typedSignatureHash(msgParams);
-      console.log('hash', hash);
+      console.log("hash", hash);
 
       const recovered = sigUtil.recoverTypedSignature({
         data: msgParams,

@@ -1,5 +1,5 @@
 export const config = {
-  contractAddress: "0xfd573b395c1e6a6e89df3207a20098a592feb6e1",
+  contractAddress: "0xBC14b1940732969D8313bEf6BfB2318B4e155dEd",
   contractAbi: [{
     "constant": true,
     "inputs": [],
@@ -7,6 +7,14 @@ export const config = {
     "outputs": [{"name": "", "type": "uint256"}],
     "payable": false,
     "stateMutability": "view",
+    "type": "function",
+  }, {
+    "constant": true,
+    "inputs": [{"name": "message", "type": "string"}],
+    "name": "doHash",
+    "outputs": [{"name": "", "type": "bytes32"}],
+    "payable": false,
+    "stateMutability": "pure",
     "type": "function",
   }, {
     "constant": true,
@@ -31,6 +39,17 @@ export const config = {
     "outputs": [],
     "payable": true,
     "stateMutability": "payable",
+    "type": "function",
+  }, {
+    "constant": true,
+    "inputs": [{"name": "message", "type": "string"}, {"name": "v", "type": "uint8"}, {
+      "name": "r",
+      "type": "bytes32",
+    }, {"name": "s", "type": "bytes32"}],
+    "name": "checkSignature",
+    "outputs": [{"name": "", "type": "address"}],
+    "payable": false,
+    "stateMutability": "pure",
     "type": "function",
   }],
 };
