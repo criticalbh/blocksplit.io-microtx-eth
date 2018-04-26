@@ -1,5 +1,5 @@
 export const config = {
-  contractAddress: "0xBC14b1940732969D8313bEf6BfB2318B4e155dEd",
+  contractAddress: "0x5c5d6d3d7a948e02c72838f4f4e25fafbfea5559",
   contractAbi: [{
     "constant": true,
     "inputs": [],
@@ -15,6 +15,17 @@ export const config = {
     "outputs": [{"name": "", "type": "bytes32"}],
     "payable": false,
     "stateMutability": "pure",
+    "type": "function",
+  }, {
+    "constant": false,
+    "inputs": [{"name": "hash", "type": "bytes32"}, {"name": "v", "type": "uint8"}, {
+      "name": "r",
+      "type": "bytes32",
+    }, {"name": "s", "type": "bytes32"}, {"name": "value", "type": "uint32"}],
+    "name": "Withdraw",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function",
   }, {
     "constant": true,
@@ -52,4 +63,5 @@ export const config = {
     "stateMutability": "pure",
     "type": "function",
   }],
+
 };

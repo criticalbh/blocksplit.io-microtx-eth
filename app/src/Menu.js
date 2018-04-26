@@ -34,6 +34,8 @@ class Menu extends Component {
 
       // hash the same data
       const hash = sigUtil.typedSignatureHash(data.data);
+      console.log(data.data);
+      console.log(hash);
 
       if (hash.toLowerCase() !== data.hash.toLowerCase()) {
         console.log("Correct data is not signed!");
@@ -60,7 +62,7 @@ class Menu extends Component {
   }
 
   sendMessage(val) {
-    this.socket.emit("buyitem", {item: val});
+    this.socket.emit("buyitem", {item: val.toString()});
     // this.signMessage(val);
   }
 
@@ -98,7 +100,17 @@ class Menu extends Component {
   }
 
   withdraw() {
-    console.log(this.lastSig);
+    const {data, sig} = this.lastSig;
+
+    const vrs = Account.decodeSignature(sig);
+    const hash = sigUtil.typedSignatureHash(data);
+
+    console.log(hash, vrs[0], vrs[1], vrs[2], data[0].value.toString());
+    this.contract.methods.Withdraw(hash, vrs[0], vrs[1], vrs[2], parseFloat(data[0].value)).send({
+      from: this.web3.eth.defaultAccount,
+    }).then(response => {
+      console.log(response);
+    });
   }
 
   render() {
